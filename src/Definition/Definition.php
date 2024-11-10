@@ -67,7 +67,7 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
      */
     public function __construct(string $id, $concrete = null)
     {
-        $id = Util::normalizeAlias($id);
+        $id = static::normaliseAlias($id);
 
         $concrete = $concrete ?? $id;
         $this->alias    = $id;
@@ -87,7 +87,7 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
 
     public function setAlias(string $id): DefinitionInterface
     {
-        $id = Util::normalizeAlias($id);
+        $id = static::normaliseAlias($id);
 
         $this->alias = $id;
         return $this;
@@ -238,5 +238,14 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
         }
 
         return $instance;
+    }
+
+    public static function normaliseAlias(string $alias): string
+    {
+        if (strpos($alias, '\\') === 0) {
+            return substr($alias, 1);
+        }
+
+        return $alias;
     }
 }

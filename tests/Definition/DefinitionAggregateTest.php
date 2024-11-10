@@ -229,10 +229,10 @@ class DefinitionAggregateTest extends TestCase
         $aggregate->resolveNew('alias');
     }
 
-    public function testDefinitionPreceedingSlash(): void
+    public function testDefinitionPrecedingSlash(): void
     {
-        $container   = $this->getMockBuilder(Container::class)->getMock();
-        $aggregate   = new DefinitionAggregate();
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
         $aggregate->setContainer($container);
 
         $some_class = "\\League\\Container\\Test\\Asset\\Foo";
@@ -243,16 +243,44 @@ class DefinitionAggregateTest extends TestCase
         self::assertInstanceOf(Definition::class, $definition);
     }
 
-    public function testGetPreceedingSlash(): void
+    public function testGetPrecedingSlash(): void
     {
-        $container   = $this->getMockBuilder(Container::class)->getMock();
-        $aggregate   = new DefinitionAggregate();
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
         $aggregate->setContainer($container);
 
         $some_class = Foo::class;
         $aggregate->add($some_class, null);
 
         $definition = $aggregate->getDefinition("\\League\\Container\\Test\\Asset\\Foo");
+
+        self::assertInstanceOf(Definition::class, $definition);
+    }
+
+    public function testDefinitionPrecedingSlashSingularQuotes(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = '\\League\\Container\\Test\\Asset\\Foo';
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition(Foo::class);
+
+        self::assertInstanceOf(Definition::class, $definition);
+    }
+
+    public function testGetPrecedingSlashSingularQuote(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = Foo::class;
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition('\\League\\Container\\Test\\Asset\\Foo');
 
         self::assertInstanceOf(Definition::class, $definition);
     }
