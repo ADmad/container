@@ -230,4 +230,18 @@ class ContainerTest extends TestCase
         $this->assertTrue($container->has(NonExistent::class));
         $this->assertSame(NonExistent::class, $container->get(NonExistent::class));
     }
+
+    public function testRuntimeOverwrite(): void
+    {
+        $concreteOne = new \stdClass();
+        $concreteTwo = new \stdClass();
+
+        $container = new Container();
+        $container->add('foo', $concreteOne);
+        $this->assertSame($concreteOne, $container->get('foo'));
+
+        $container->add('foo', $concreteTwo, true);
+        $this->assertSame($concreteTwo, $container->get('foo'));
+        $this->assertNotSame($concreteOne, $container->get('foo'));
+    }
 }
