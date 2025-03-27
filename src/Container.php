@@ -15,6 +15,31 @@ use Psr\Container\ContainerInterface;
 class Container implements DefinitionContainerInterface
 {
     /**
+     * @var boolean
+     */
+    protected $defaultToShared = false;
+
+    /**
+     * @var boolean
+     */
+    protected $defaultToOverwrite = false;
+
+    /**
+     * @var DefinitionAggregateInterface
+     */
+    protected $definitions;
+
+    /**
+     * @var ServiceProviderAggregateInterface
+     */
+    protected $providers;
+
+    /**
+     * @var InflectorAggregateInterface
+     */
+    protected $inflectors;
+
+    /**
      * @var ContainerInterface[]
      */
     protected array $delegates = [];
@@ -38,26 +63,34 @@ class Container implements DefinitionContainerInterface
         }
     }
 
-    public function add(string $id, mixed $concrete = null): DefinitionInterface
+    public function add(string $id, $concrete = null, bool $overwrite = false): DefinitionInterface
     {
-        $concrete ??= $id;
+        $toOverwrite = $this->defaultToOverwrite || $overwrite;
+        $concrete = $concrete ??= $id;
 
         if (true === $this->defaultToShared) {
-            return $this->addShared($id, $concrete);
+            return $this->addShared($id, $concrete, $toOverwrite);
         }
 
-        return $this->definitions->add($id, $concrete);
+        return $this->definitions->add($id, $concrete, $toOverwrite);
     }
 
-    public function addShared(string $id, mixed $concrete = null): DefinitionInterface
+    public function addShared(string $id, $concrete = null, bool $overwrite = false): DefinitionInterface
     {
-        $concrete ??= $id;
-        return $this->definitions->addShared($id, $concrete);
+        $toOverwrite = $this->defaultToOverwrite || $overwrite;
+        $concrete = $concrete ??= $id;
+        return $this->definitions->addShared($id, $concrete, $toOverwrite);
     }
 
     public function defaultToShared(bool $shared = true): ContainerInterface
     {
         $this->defaultToShared = $shared;
+        return $this;
+    }
+
+    public function defaultToOverwrite(bool $overwrite = true): ContainerInterface
+    {
+        $this->defaultToOverwrite = $overwrite;
         return $this;
     }
 
@@ -154,7 +187,6 @@ class Container implements DefinitionContainerInterface
         if ($this->providers->provides($id)) {
             $this->providers->register($id);
 
-            /** @noinspection PhpUnreachableStatementInspection */
             if (false === $this->definitions->has($id) && false === $this->definitions->hasTag($id)) {
                 throw new ContainerException(sprintf('Service provider lied about providing (%s) service', $id));
             }

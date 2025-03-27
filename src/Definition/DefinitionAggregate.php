@@ -19,8 +19,12 @@ class DefinitionAggregate implements DefinitionAggregateInterface
         });
     }
 
-    public function add(string $id, mixed $definition): DefinitionInterface
+    public function add(string $id, $definition, bool $overwrite = false): DefinitionInterface
     {
+        if (true === $overwrite) {
+            $this->remove($id);
+        }
+
         if (false === ($definition instanceof DefinitionInterface)) {
             $definition = new Definition($id, $definition);
         }
@@ -30,9 +34,9 @@ class DefinitionAggregate implements DefinitionAggregateInterface
         return $definition;
     }
 
-    public function addShared(string $id, mixed $definition): DefinitionInterface
+    public function addShared(string $id, $definition, bool $overwrite = false): DefinitionInterface
     {
-        $definition = $this->add($id, $definition);
+        $definition = $this->add($id, $definition, $overwrite);
         return $definition->setShared(true);
     }
 
@@ -103,6 +107,17 @@ class DefinitionAggregate implements DefinitionAggregateInterface
         }
 
         return $arrayOf;
+    }
+
+    public function remove(string $id): void
+    {
+        $id = Definition::normaliseAlias($id);
+
+        foreach ($this->getIterator() as $key => $definition) {
+            if ($id === $definition->getAlias()) {
+                unset($this->definitions[$key]);
+            }
+        }
     }
 
     public function getIterator(): Generator
