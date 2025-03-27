@@ -163,11 +163,11 @@ class Container implements DefinitionContainerInterface
         if ($this->providers->provides($id)) {
             $this->providers->register($id);
 
-            if (false === $this->definitions->has($id)) {
+            if (false === $this->definitions->has($id) && false === $this->definitions->hasTag($id)) { // @phpstan-ignore-line
                 throw new ContainerException(sprintf('Service provider lied about providing (%s) service', $id));
             }
 
-            return $this->resolve($id, $new);
+            return $this->resolve($id, $new); // @phpstan-ignore-line
         }
 
         foreach ($this->delegates as $delegate) {

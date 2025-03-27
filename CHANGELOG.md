@@ -2,6 +2,11 @@
 
 All Notable changes to `League\Container` will be documented in this file
 
+### 5.0.1
+
+### Fixed
+- Fixed a small unreachable code bug
+
 ## 5.0.0
 
 ### Added
