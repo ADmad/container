@@ -31,6 +31,7 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
         protected array $methods = [],
         protected array $tags = [],
     ) {
+        $this->setId($this->id);
         $this->concrete ??= $this->id;
     }
 
@@ -47,13 +48,13 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
 
     public function setId(string $id): DefinitionInterface
     {
-        $this->id = $id;
+        $this->id = static::normaliseAlias($id);
         return $this;
     }
 
     public function getId(): string
     {
-        return $this->id;
+        return static::normaliseAlias($this->id);
     }
 
     public function setAlias(string $id): DefinitionInterface
@@ -206,10 +207,6 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
 
     public static function normaliseAlias(string $alias): string
     {
-        if (str_starts_with($alias, '\\')) {
-            return substr($alias, 1);
-        }
-
-        return $alias;
+        return ltrim($alias, "\\");
     }
 }
