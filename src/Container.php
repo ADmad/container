@@ -163,7 +163,7 @@ class Container implements DefinitionContainerInterface
         if ($this->providers->provides($id)) {
             $this->providers->register($id);
 
-            if (false === $this->definitions->has($id) && false === $this->definitions->hasTag($id)) {
+            if (false === $this->definitions->has($id)) {
                 throw new ContainerException(sprintf('Service provider lied about providing (%s) service', $id));
             }
 
