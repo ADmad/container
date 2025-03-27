@@ -2,6 +2,16 @@
 
 All Notable changes to `League\Container` will be documented in this file
 
+## 5.0.0
+
+### Added
+- Ability to overwrite a definition within the container, disabled by default
+
+### Changed
+- PHP requirement now `>=8.1`
+- General language modernisation
+- General prep for future updates and container compilation
+
 ## 4.2.4
 
 ### Fixed
