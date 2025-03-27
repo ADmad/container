@@ -203,4 +203,13 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
 
         return $instance;
     }
+
+    public static function normaliseAlias(string $alias): string
+    {
+        if (str_starts_with($alias, '\\')) {
+            return substr($alias, 1);
+        }
+
+        return $alias;
+    }
 }

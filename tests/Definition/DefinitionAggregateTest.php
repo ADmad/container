@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace League\Container\Test\Definition;
 
 use League\Container\Container;
-use League\Container\Definition\{DefinitionAggregate, DefinitionInterface};
+use League\Container\Definition\{Definition, DefinitionAggregate, DefinitionInterface};
 use League\Container\Exception\NotFoundException;
 use League\Container\Test\Asset\Foo;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +24,7 @@ class DefinitionAggregateTest extends TestCase
             ->willReturnSelf()
         ;
 
+        /** @var DefinitionAggregate $aggregate */
         $aggregate  = (new DefinitionAggregate())->setContainer($container);
         $definition = $aggregate->add('alias', $definition);
 
@@ -33,6 +34,7 @@ class DefinitionAggregateTest extends TestCase
     public function testAggregateCreatesDefinition(): void
     {
         $container  = $this->getMockBuilder(Container::class)->getMock();
+        /** @var DefinitionAggregate $aggregate */
         $aggregate  = (new DefinitionAggregate())->setContainer($container);
         $definition = $aggregate->add('alias', Foo::class);
         $this->assertSame('alias', $definition->getAlias());
@@ -41,6 +43,7 @@ class DefinitionAggregateTest extends TestCase
     public function testAggregateHasDefinition(): void
     {
         $container  = $this->getMockBuilder(Container::class)->getMock();
+        /** @var DefinitionAggregate $aggregate */
         $aggregate  = (new DefinitionAggregate())->setContainer($container);
         $aggregate->add('alias', Foo::class);
         $this->assertTrue($aggregate->has('alias'));
@@ -50,6 +53,7 @@ class DefinitionAggregateTest extends TestCase
     public function testAggregateAddsAndIteratesMultipleDefinitions(): void
     {
         $container = $this->getMockBuilder(Container::class)->getMock();
+        /** @var DefinitionAggregate $aggregate */
         $aggregate = (new DefinitionAggregate())->setContainer($container);
 
         $definitions = [];
@@ -227,5 +231,61 @@ class DefinitionAggregateTest extends TestCase
         $aggregate->addShared('alias2', $definition2);
 
         $aggregate->resolveNew('alias');
+    }
+
+    public function testDefinitionPrecedingSlash(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = "\\League\\Container\\Test\\Asset\\Foo";
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition(Foo::class);
+
+        self::assertInstanceOf(Definition::class, $definition);
+    }
+
+    public function testGetPrecedingSlash(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = Foo::class;
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition("\\League\\Container\\Test\\Asset\\Foo");
+
+        self::assertInstanceOf(Definition::class, $definition);
+    }
+
+    public function testDefinitionPrecedingSlashSingularQuotes(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = '\\League\\Container\\Test\\Asset\\Foo';
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition(Foo::class);
+
+        self::assertInstanceOf(Definition::class, $definition);
+    }
+
+    public function testGetPrecedingSlashSingularQuote(): void
+    {
+        $container = $this->getMockBuilder(Container::class)->getMock();
+        $aggregate = new DefinitionAggregate();
+        $aggregate->setContainer($container);
+
+        $some_class = Foo::class;
+        $aggregate->add($some_class, null);
+
+        $definition = $aggregate->getDefinition('\\League\\Container\\Test\\Asset\\Foo');
+
+        self::assertInstanceOf(Definition::class, $definition);
     }
 }

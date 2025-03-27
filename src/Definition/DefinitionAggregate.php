@@ -42,6 +42,8 @@ class DefinitionAggregate implements DefinitionAggregateInterface
 
     public function has(string $id): bool
     {
+        $id = Definition::normaliseAlias($id);
+
         foreach ($this as $definition) {
             if ($id === $definition->getAlias()) {
                 return true;
@@ -64,6 +66,8 @@ class DefinitionAggregate implements DefinitionAggregateInterface
 
     public function getDefinition(string $id): DefinitionInterface
     {
+        $id = Definition::normaliseAlias($id);
+
         foreach ($this as $definition) {
             if ($id === $definition->getAlias()) {
                 return $definition->setContainer($this->getContainer());
@@ -113,7 +117,7 @@ class DefinitionAggregate implements DefinitionAggregateInterface
     {
         $id = Definition::normaliseAlias($id);
 
-        foreach ($this->getIterator() as $key => $definition) {
+        foreach ($this as $key => $definition) {
             if ($id === $definition->getAlias()) {
                 unset($this->definitions[$key]);
             }
