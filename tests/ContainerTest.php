@@ -244,4 +244,19 @@ class ContainerTest extends TestCase
         $this->assertSame($concreteTwo, $container->get('foo'));
         $this->assertNotSame($concreteOne, $container->get('foo'));
     }
+
+    public function testDefaultOverwrite(): void
+    {
+        $concreteOne = new \stdClass();
+        $concreteTwo = new \stdClass();
+
+        $container = new Container();
+        $container->defaultToOverwrite();
+        $container->add('foo', $concreteOne);
+        $this->assertSame($concreteOne, $container->get('foo'));
+
+        $container->add('foo', $concreteTwo);
+        $this->assertSame($concreteTwo, $container->get('foo'));
+        $this->assertNotSame($concreteOne, $container->get('foo'));
+    }
 }

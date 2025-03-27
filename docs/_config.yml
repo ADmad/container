@@ -1,7 +1,7 @@
 # site settings
 title: Container
 subtitle: The PHP League
-email: philipo@benito.email
+email: mail@philbennett.co.uk
 description: A simple but powerful PSR-11 dependency injection container
 baseurl: # the subpath of your site, e.g. /blog
 url: # the base hostname & protocol for your site
