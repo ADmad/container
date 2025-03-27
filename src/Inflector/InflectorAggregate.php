@@ -16,7 +16,7 @@ class InflectorAggregate implements InflectorAggregateInterface
      */
     protected array $inflectors = [];
 
-    public function add(string $type, callable $callback = null): Inflector
+    public function add(string $type, ?callable $callback = null): Inflector
     {
         $inflector = new Inflector($type, callback: $callback);
         $this->inflectors[] = $inflector;

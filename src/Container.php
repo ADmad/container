@@ -15,31 +15,6 @@ use Psr\Container\ContainerInterface;
 class Container implements DefinitionContainerInterface
 {
     /**
-     * @var boolean
-     */
-    protected $defaultToShared = false;
-
-    /**
-     * @var boolean
-     */
-    protected $defaultToOverwrite = false;
-
-    /**
-     * @var DefinitionAggregateInterface
-     */
-    protected $definitions;
-
-    /**
-     * @var ServiceProviderAggregateInterface
-     */
-    protected $providers;
-
-    /**
-     * @var InflectorAggregateInterface
-     */
-    protected $inflectors;
-
-    /**
      * @var ContainerInterface[]
      */
     protected array $delegates = [];
@@ -48,7 +23,8 @@ class Container implements DefinitionContainerInterface
         protected DefinitionAggregateInterface $definitions = new DefinitionAggregate(),
         protected ServiceProviderAggregateInterface $providers = new ServiceProviderAggregate(),
         protected InflectorAggregateInterface $inflectors = new InflectorAggregate(),
-        protected bool $defaultToShared = false
+        protected bool $defaultToShared = false,
+        protected bool $defaultToOverwrite = false,
     ) {
         if ($this->definitions instanceof ContainerAwareInterface) {
             $this->definitions->setContainer($this);
@@ -149,7 +125,7 @@ class Container implements DefinitionContainerInterface
         return false;
     }
 
-    public function inflector(string $type, callable $callback = null): InflectorInterface
+    public function inflector(string $type, ?callable $callback = null): InflectorInterface
     {
         return $this->inflectors->add($type, $callback);
     }

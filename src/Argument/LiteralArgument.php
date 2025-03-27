@@ -21,7 +21,7 @@ class LiteralArgument implements LiteralArgumentInterface
 
     protected mixed $value;
 
-    public function __construct(mixed $value, string $type = null)
+    public function __construct(mixed $value, ?string $type = null)
     {
         if (
             null === $type
